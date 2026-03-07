@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_api',
 ]
 
 MIDDLEWARE = [
@@ -101,7 +102,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
+# settings.py
 
+# Явная кодировка для файлов и ответов
+FILE_CHARSET = 'utf-8'
+DEFAULT_CHARSET = 'utf-8'
+
+# Настройка языка (влияет на кодировку в некоторых системах)
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
