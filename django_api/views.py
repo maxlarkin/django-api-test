@@ -7,10 +7,9 @@ from .serializers import EmailSerializer
 
 class EmailViewSet(viewsets.ModelViewSet):
     """ViewSet для управления письмами."""
-    
+
     queryset = Email.objects.all()
     serializer_class = EmailSerializer
-    # Нет permission_classes — доступ открыт всем
 
     def get_queryset(self):
         """Получение писем в папке"""
@@ -21,14 +20,6 @@ class EmailViewSet(viewsets.ModelViewSet):
         if folder:
             queryset = queryset.filter(folder=folder)
 
-        # Дополнительная фильтрация по email (опционально)
-        email = self.request.query_params.get('email', None)
-        if email:
-            # Поиск писем, где пользователь — отправитель ИЛИ получатель
-            queryset = queryset.filter(
-                models.Q(sender=email) | models.Q(recipient=email)
-            )
-
         return queryset
 
     def create(self, request, *args, **kwargs):
@@ -37,12 +28,10 @@ class EmailViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        # Письмо создаётся в папке 'inbox' получателя
-        # Отправитель видит его, фильтруя по своему email как sender
-        email = serializer.save(folder='inbox', is_read=False)
+        email = serializer.save(folder='sent', is_read=False)
 
         return Response(
-            EmailSerializer(email).data, 
+            EmailSerializer(email).data,
             status=status.HTTP_201_CREATED
         )
 
@@ -79,7 +68,7 @@ class EmailViewSet(viewsets.ModelViewSet):
         email.save(update_fields=['folder'])
 
         return Response({
-            'status': 'success',
+            'status': '200',
             'message': f'Письмо перемещено в папку "{new_folder}"',
             'email': EmailSerializer(email).data
         })
